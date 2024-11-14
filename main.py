@@ -43,6 +43,36 @@ def initialMenu():
         if(user.getLoggedIn()):
             mainMenu(user, cart, inventory, history)
 
+def inventoryMenu(inventory):
+    while True:
+        print("Inventory Menu:")
+        print("0. Go Back")
+        print("1. View Inventory")
+        print("2. Search Inventory")
+        print("3. Decrease Stock")
+        choice = input("Enter your choice: ")
+        print()
+
+        if choice == "0":
+            break
+
+        elif choice == "1":
+            inventory.view_inventory()  # Corrected method name
+
+        elif choice == "2":
+            title = input("Enter the title to search: ")
+            inventory.search_inventory(title)  # Corrected method name
+
+        elif choice == "3":
+            isbn = input("Enter the ISBN of the item: ")
+            quantity = int(input("Enter the quantity to decrease: "))
+            inventory.decrease_stock(isbn, quantity)  # Corrected method name
+
+        else:
+            print("Invalid option. Please try again.")
+
+        print()
+
 
 ## incomplete main menu...
 def mainMenu(user, cart, inventory, history):
@@ -61,13 +91,13 @@ def mainMenu(user, cart, inventory, history):
             user.logout()
 
             print("Successful logout.")
-
+        elif(option == "2"):
+            inventoryMenu(inventory)
         ## incorrect menu option
         else:
             print("That's not a menu option. Please try again.")
 
         print()
-
 
 def main():
     print("Welcome to the online bookstore!\n")
