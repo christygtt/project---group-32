@@ -72,8 +72,6 @@ def inventoryMenu(inventory):
             print("Invalid option. Please try again.")
 
         print()
-
-
 ## incomplete main menu...
 def mainMenu(user, cart, inventory, history):
     while(user.getLoggedIn()):
@@ -98,6 +96,7 @@ def mainMenu(user, cart, inventory, history):
             print("That's not a menu option. Please try again.")
 
         print()
+
 
 def main():
     print("Welcome to the online bookstore!\n")
