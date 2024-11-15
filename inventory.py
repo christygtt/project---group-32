@@ -1,28 +1,13 @@
 import sqlite3
 
 class Inventory:
-   import sqlite3
-
-class Inventory:
-    def __init__(self, database_name=""):
-        self.database_name = database_name
-        self.connection = None
-        if database_name:
-            self.connect_to_database()
-
-    def connect_to_database(self):
-        """Establishes a connection to the SQLite database."""
+    def __init__(self, databaseName="methods.db"):
+        self.databaseName = databaseName
         try:
-            self.connection = sqlite3.connect(self.database_name)
-            print("Database connected successfully.")
-        except sqlite3.Error as e:
-            print(f"Error connecting to database: {e}")
-
-    def close_connection(self):
-        """Closes the database connection."""
-        if self.connection:
-            self.connection.close()
-            print("Database connection closed.")
+         self.connection = sqlite3.connect(self.databaseName)
+         print("Database connected successfully.")
+        except Exception as e:
+         print("Failed to connect to database:", e)
 
     def view_inventory(self):
         """Displays all items in the inventory."""
@@ -33,12 +18,16 @@ class Inventory:
             if items:
                 print("Inventory Items:")
                 for item in items:
-                    print(f"ISBN: {item[0]}, Title: {item[1]}, Author: {item[2]}, "
-                          f"Genre: {item[3]}, Pages: {item[4]}, Release Date: {item[5]}, "
-                          f"Price: {item[6]}, Stock: {item[7]}")
+                    print(item)
             else:
                 print("Inventory is empty.")
         except sqlite3.Error as e:
             print(f"Error retrieving inventory: {e}")
+
+    def close_connection(self):
+        """Closes the database connection."""
+        if self.connection:
+            self.connection.close()
+            print("Database connection closed.")
 
    
