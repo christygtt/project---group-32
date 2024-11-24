@@ -74,6 +74,29 @@ def inventoryMenu(inventory):
         print()
 
 
+def cartMenu(cart):
+    while True:
+        print("Cart Menu: ")
+        print("0. Go Back")
+        print("1. View Cart")
+        print("2. Add Items To Cart")
+        print("3. Remove Item From Cart")
+        print("4. Checkout")
+        choice = int(input("Enter your choice:"))
+        print()
+        if choice == "0":
+            break
+        elif choice == "1":
+            cart.viewCart()
+        elif choice == "2":
+            cart.addToCart()
+        elif choice == "3":
+            cart.removeFromCart()
+        elif choice == "4":
+            cart.Checkout()
+        else:
+            print(f"Invalid. option. Please try again.")
+        print()
 ## incomplete main menu...
 def mainMenu(user, cart, inventory, history):
     while(user.getLoggedIn()):
@@ -93,6 +116,8 @@ def mainMenu(user, cart, inventory, history):
             print("Successful logout.")
         elif(option == "2"):
             inventoryMenu(inventory)
+        elif(option == "3"):
+            cartMenu(cart)
         ## incorrect menu option
         else:
             print("That's not a menu option. Please try again.")

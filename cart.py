@@ -1,3 +1,5 @@
+from inventory import Inventory
+import sqlite3
 class Cart:
 
     def __init__(self):
@@ -15,8 +17,8 @@ class Cart:
                 INNER JOIN Inventory ON Cart.ISBN = Inventory.ISBN
                 WHERE Cart.UserID = ?;
         """
-            cursor.execute(query, (userID,))
-            result = cursor.fetchall()
+            self.cursor.execute(query, (userID,))
+            result = self.cursor.fetchall()
         
             if not result:
                 print("User Cart is empty.")
@@ -26,11 +28,11 @@ class Cart:
                 for row in result:
                     row = Inventory.title, Inventory.ISBN, Inventory.Price, Cart.quantity
                     
-                    item_cost = float(price) * int(quantity)
+                    item_cost = float(self.price) * int(self.quantity)
                     cart_cost += item_cost
-                    print(f"Title: {title}")
-                    print(f"ISBN: {isbn}")
-                    print(f"Price: {price:.2f} | Quantity: {quantity} | Item Total: {item_cost:.2f}")
+                    print(f"Title: {self.title}")
+                    print(f"ISBN: {self.isbn}")
+                    print(f"Price: {self.price:.2f} | Quantity: {self.quantity} | Item Total: {item_cost:.2f}")
                 print(f"Total Cart Cost: ${cart_cost:.2f}")  
         except:
             print(f"An error occured. Please try again.")
@@ -40,24 +42,24 @@ class Cart:
 
         try:
             ## sends query and data
-            cursor.execute(query, data)
+            self.cursor.execute(query, data)
 
             ## commits change
             self.connection.commit()
 
             ## shows changes
-            print(cursor.rowcount, "book(s) added to cart.")
+            print(self.cursor.rowcount, "book(s) added to cart.")
             print()
         except:
             print("Error adding item(s) to cart.")
         
-    def removeFromCart(self,userID,ISBN):
+    def removeFromCart(self,userID,Inventory.ISBN):
         try:
             query = "DELETE FROM Cart WHERE userID = ? AND ISBN=?"
 
             ## deleting --> weird quirk where you need to have a second blank item
             ## so the tuple has ", " at the end of it, no matter how many items used
-            data = (userID,IBSN)
+            data = (userID,Inventory.IBSN)
 
             ## sends query and data
             self.cursor.execute(query, data)
