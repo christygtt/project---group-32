@@ -95,7 +95,7 @@ class Cart:
                     inventory.decrease_stock(isbn,quantity)
                     order_history.addOrderItems(order_id, isbn, quantity, price)
                 
-                # delete all items from cart
+                # delete all items from cart after checking out
                 query = "DELETE FROM Cart WHERE UserID = ?"
                 data = (userID)
 
