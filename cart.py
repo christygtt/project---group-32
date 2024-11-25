@@ -37,10 +37,11 @@ class Cart:
                     item_cost = float(price) * int(quantity)
                     cart_Cost += item_cost
 
+                    print(f"***********************************Cart***************************************")
                     print(f"Title: {title}")
                     print(f"ISBN: {ISBN}")
                     print(f"Price: {price:.2f} | Quantity: {quantity} | Item Total: {item_cost:.2f}")
-
+                    print(f"******************************************************************************")
                 print(f"Total Cart Cost: ${cart_Cost:.2f}")  
 
         except :
