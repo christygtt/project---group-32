@@ -34,7 +34,7 @@ class OrderHistory:
 
     
 
-    def createOrder(self, userID, orderID):
+    def createOrder(self, userID, itemNumber, cost, date):
         while True:
             orderID = str(random.randint(100000, 999999))
             self.cursor.execute("SELECT * FROM Odrers WHERE OrderNumber = ?",(orderID,))
@@ -42,7 +42,7 @@ class OrderHistory:
                 break
 
         query = "INSERT INTO Orders (OrderNUmber, UserID ItemNumber, Cost Date) VALUES (?, ?, ?, ?, ?)"
-        self.cursor.execute(query, (orderID, userID, itemNumber cost, date))
+        self.cursor.execute(query, (orderID, userID, itemNumber, cost, date))
         self.connection.commit() 
         return orderID
 
