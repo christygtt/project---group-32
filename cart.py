@@ -54,20 +54,24 @@ class Cart:
             data = (userID, ISBN, quantity)
             self.cursor.execute(query, data)
             self.connection.commit()
-            print(f"{self.cursor.rowcount} book(s) added to cart.")
+            print(f"{quantity} copy(s) of {ISBN} added to cart.")
         except:
             print("Error adding item(s) to cart.")
 
     def removeFromCart(self, userID, ISBN):
         #Removes from user cart
         try:
-            query = "DELETE FROM Cart WHERE userID = ? AND ISBN = ?"
-            data = (userID, ISBN)
+            self.cursor.execute("SELECT * FROM Cart WHERE userID = ? AND ISBN = ?", (userID, ISBN))
+            if self.cursor.fetchone():
+                query = "DELETE FROM Cart WHERE userID = ? AND ISBN = ?"
+                data = (userID, ISBN)
 
-            self.cursor.execute(query, data)
-            self.connection.commit()
+                self.cursor.execute(query, data)
+                self.connection.commit()
 
-            print(f"{self.cursor.rowcount} item(s) deleted from cart.")
+                print(f"All copies of ISBN {ISBN} has been deleted from cart.")
+            else:
+                print("Item not found in cart.")
         except:
             print("Error removing item(s) from cart.")
 

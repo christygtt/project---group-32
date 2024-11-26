@@ -142,7 +142,8 @@ def cartMenu(cart,User):
             quantity = input("Enter the quantity of item: ")
             cart.addToCart(userID, ISBN, quantity)
         elif choice == 3:
-            cart.removeFromCart(userID)
+            ISBN = input("Enter the ISBN of the item you'd like to remove: ")
+            cart.removeFromCart(userID, ISBN)
         elif choice == 4:
             cart.Checkout(userID)
         else:
@@ -172,7 +173,7 @@ def mainMenu(user, cart, inventory, history):
             inventoryMenu(inventory)
 
         elif(option == "3"):
-            cartMenu(cart, User)
+            cartMenu(cart, user)
 
         elif(option == "4"):
             historyMenu(history, user)
