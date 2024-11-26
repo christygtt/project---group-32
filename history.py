@@ -50,7 +50,7 @@ class OrderHistory:
 
     def addOrderItems(self, userID, orderID):
         query = "SELECT ISBN, Quantity FROM Cart WHERE UserID = ?"
-        self.cursor.execute(query, (userID))
+        self.cursor.execute(query, (userID,))
         cart_items = self.cursor.fetchall()
 
         for isbn, quantity in cart_items:

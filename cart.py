@@ -101,50 +101,53 @@ class Cart:
             self.cursor.execute(query, (userID,))
 
             cart_items = self.cursor.fetchall()
-
-            print(f"Cart items fetched: {cart_items}")
-            if not cart_items:
-                print("Cart is empty.")
-                return
-            else:
             
-                total_cost = 0  
-                total_items = 0  
+            print(f"*********************************************************")
+            print(f"                Current items in cart                    ")
+            print(f"**************************Cart***************************")
+            print(f"                      {cart_items}")
+            if not cart_items:
+                print("               Your cart is empty.                       ")
+                return
+            
+            total_cost = 0  
+            total_items = 0  
 
 
-                for item in cart_items:
-                    price = item[1]
-                    quantity = item[2]
-                    
-                    total_cost += price * quantity  
-                    total_items += quantity  
-
-                date = datetime.datetime.now().strftime('%Y-%m-%d')
-
-                order_history = OrderHistory()
-                order_id = order_history.createOrder(userID, total_items, total_cost, date)
-
-                order_history.addOrderItems(userID, order_id)
-
-                inventory = Inventory(self.database_name)  
-                for item in cart_items:
-                    isbn = item[0]
-                    quantity = item[2]
-                    
-                    inventory.decrease_stock(isbn, quantity)
-
-                query = "DELETE FROM Cart WHERE userID = ?"
-                self.cursor.execute(query, (userID,))
-                self.connection.commit()
+            for item in cart_items:
+                price = item[1]
+                quantity = item[2]
+                
+                total_cost += price * quantity  
+                total_items += quantity  
+            print(f"{total_cost} | {total_items}")
 
 
-                print("Checkout complete.")  
+            date = datetime.datetime.now().strftime('%Y-%m-%d')
+
+            print(f"The Current Date is: {date}")
+
+            order_history = OrderHistory()
+            order_id = order_history.createOrder(userID, total_items, total_cost, date)
+            print(f"Your Order ID is: {order_id}")
+            order_history.addOrderItems(userID, order_id)
+
+            inventory = Inventory(self.database_name)  
+            for item in cart_items:
+                isbn = item[0]
+                quantity = item[2]
+                inventory.decrease_stock(isbn, quantity)
+
+
+            print("********************Checkout complete!*******************")  
 
         except sqlite3.Error as e:
             print(f"Error checking : {e}")
 
-        
+    def closeConnection(self):
+        self.cursor.close()
+        self.connection.close()  
            
 
 
-        
+    
