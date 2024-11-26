@@ -4,9 +4,12 @@ import sqlite3
 
 class Cart:
 
-    def __init__(self):
+    def __init__(self, database_name = "methods.db"):
         #Zero constructor to allow the class to initialize without parameters.
-        pass
+        self.database_name = database_name
+        self.connection = None
+        self.cursor = None
+        self.cartDB()
 
     def cartDB(self, database_name="methods.db"):
         """Sets up the database connection."""
@@ -31,32 +34,41 @@ class Cart:
             else:
                 print("User Cart: ")
                 cart_Cost = 0.0
+                print(f"***********************************Cart***************************************")
                 for row in result:
                     title, ISBN, price, quantity = row
 
                     item_cost = float(price) * int(quantity)
                     cart_Cost += item_cost
 
-                    print(f"***********************************Cart***************************************")
                     print(f"Title: {title}")
                     print(f"ISBN: {ISBN}")
                     print(f"Price: {price:.2f} | Quantity: {quantity} | Item Total: {item_cost:.2f}")
                     print(f"******************************************************************************")
+
+                print(f"******************************************************************************")
                 print(f"Total Cart Cost: ${cart_Cost:.2f}")  
 
         except :
             print("An error occurred while viewing the cart.")
 
     def addToCart(self, userID, ISBN, quantity=1):
-        #Adds to user cart
         try:
+            self.cursor.execute("SELECT * FROM Inventory WHERE ISBN = ?", (ISBN,))
+            item = self.cursor.fetchone()
+
+            if not item:
+                print("ISBN {ISBN} does not exist in the inventory.")
+                return
             query = "INSERT INTO Cart (userID, ISBN, quantity) VALUES (?, ?, ?)"
             data = (userID, ISBN, quantity)
             self.cursor.execute(query, data)
+            print(f"Added {quantity} copy(s) of {ISBN} to the cart.")
+            
             self.connection.commit()
-            print(f"{quantity} copy(s) of {ISBN} added to cart.")
-        except:
-            print("Error adding item(s) to cart.")
+        except sqlite3.Error as e:
+            print(f"Error adding item(s) to cart: {e}")
+
 
 
     def removeFromCart(self, userID, ISBN):
@@ -73,8 +85,8 @@ class Cart:
                 print(f"All copies of ISBN {ISBN} has been deleted from cart.")
             else:
                 print("Item not found in cart.")
-        except:
-            print("Error removing item(s) from cart.")
+        except sqlite3.Error as e:
+            print(f"Error removing item(s) to cart: {e}")
 
     def checkOut(self, userID):
         try:
@@ -108,8 +120,10 @@ class Cart:
                 self.cursor.execute(query, data)
                 self.connection.commit()
                 print("Checkout complete.")
-        except:
-            print("Error completing Checkout. Please try again.")
+
+        except sqlite3.Error as e:
+            print(f"Error completing Checkout. {e}")
+           
 
 
         
