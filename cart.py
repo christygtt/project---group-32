@@ -113,23 +113,24 @@ class Cart:
             total_cost = 0  
             total_items = 0  
 
-
+            #acts similar to creating a row. assigns each item retrieved from inventory a index number
             for item in cart_items:
                 price = item[1]
                 quantity = item[2]
-                
+                #calculations for createOrder parameters
                 total_cost += price * quantity  
                 total_items += quantity  
-            print(f"{total_cost} | {total_items}")
+            print(f"{total_cost} | {total_items}") #debug
 
 
-            date = datetime.datetime.now().strftime('%Y-%m-%d')
+            date = datetime.datetime.now().strftime('%Y-%m-%d') #gets current date
 
-            print(f"The Current Date is: {date}")
+            print(f"The Current Date is: {date}") #debug
 
+            #create order history
             order_history = OrderHistory()
-            order_id = order_history.createOrder(userID, total_items, total_cost, date)
-            print(f"Your Order ID is: {order_id}")
+            order_id = order_history.createOrder(userID, total_items, total_cost, date) #returns orderID
+            print(f"Your Order ID is: {order_id}") #debug
             order_history.addOrderItems(userID, order_id)
 
             inventory = Inventory(self.database_name)  
