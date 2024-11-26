@@ -139,7 +139,12 @@ def cartMenu(cart,User):
             cart.viewCart(userID)
         elif choice == 2:
             ISBN = input("Enter the ISBN of the item you'd like to order: ")
-            quantity = input("Enter the quantity of item: ")
+            while True:
+                try:
+                    quantity = int(input("Enter the quantity of item: "))
+                    break
+                except ValueError:
+                    print("Please enter a valid number.")
             cart.addToCart(userID, ISBN, quantity)
         elif choice == 3:
             ISBN = input("Enter the ISBN of the item you'd like to remove: ")

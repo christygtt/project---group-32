@@ -58,6 +58,7 @@ class Cart:
         except:
             print("Error adding item(s) to cart.")
 
+
     def removeFromCart(self, userID, ISBN):
         #Removes from user cart
         try:
