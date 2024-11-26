@@ -73,6 +73,47 @@ def inventoryMenu(inventory):
 
         print()
 
+def historyMenu(history, user):
+    while True:
+        print("Order History Menu")
+        print("0. Go Back")
+        print("1. View Order History")
+        print("2. View Specific Order")
+        choice = input("Enter your choice: ")
+        print()
+
+        if choice == "0":
+            break 
+        
+        elif choice == "1":
+
+            user_id = user.getUserID()
+            orders = history.viewHistory(user_id)
+            if orders:
+                print("Order History:")
+                for order in orders:
+                    print(f"Order Number: {order[0]}, Items: {order[1]}, Cost : {order[2]}, Date: {order[3]}")
+                else:
+                    print("No order history found.")
+                print()
+
+        elif choice == "2":
+
+            user_id = user.getUserID()
+            order_id = input("Enter the Order Number: ")
+            order_details = history.viewOrder(user_id, order_id)
+            if order_details:
+                print("Order Details:")
+                for detail in order_details:
+                    print(f"Title: {detail[1]}, Quantity: {detail[2]}, Cost: {detail[3]}")
+            else:
+                print("No details found for the given Order Number.")
+            print()
+
+        else:
+            print("Invalid option. Please try again.")
+        print()
+
 
 def cartMenu(cart):
     while True:
@@ -112,12 +153,19 @@ def mainMenu(user, cart, inventory, history):
         ## logging out
         if(option == "0"):
             user.logout()
+            print("Logout Successful.")
 
-            print("Successful logout.")
+        elif(option == "1"):
+            user.viewAccountInformation()
+            
         elif(option == "2"):
             inventoryMenu(inventory)
+
         elif(option == "3"):
             cartMenu(cart)
+
+        elif(option == "4"):
+            historyMenu(history, user)
         ## incorrect menu option
         else:
             print("That's not a menu option. Please try again.")
