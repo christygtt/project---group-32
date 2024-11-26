@@ -105,7 +105,7 @@ class Cart:
     def checkOut(self, userID):
         try:
             query = """
-                SELECT Inventory.Title,Inventory.ISBN, Inventory.Price, Cart.Quantity
+                SELECT Inventory.ISBN, Inventory.Price, Cart.Quantity
                 FROM Cart
                 INNER JOIN Inventory ON Cart.ISBN = Inventory.ISBN
                 WHERE Cart.userID = ?;
@@ -115,39 +115,24 @@ class Cart:
             cart_items = self.cursor.fetchall()
             if not cart_items:
                 print("**********************Your cart is empty.*************************")
-                return
-            print(f"************************Current items in cart**************************")
-            cart_Cost = 0.0
-            for row in cart_items:
-                    title,ISBN, price, quantity = row
-
-                    item_cost = float(price) * int(quantity)
-                    cart_Cost += item_cost
-
-                    print(f"Title: {title}")
-                    print(f"ISBN: {ISBN}")
-                    print(f"Price: {price:.2f} | Quantity: {quantity} | Item Total: {item_cost:.2f}")
-                    print(f"***********************************************************************")
-
-            print(f"******************************************************************************")
-            print(f"Total Cart Cost: ${cart_Cost:.2f}")  
+                return  
             
             total_cost = 0  
             total_items = 0  
-
+            print("****************************Order Information******************************")
             #acts similar to creating a row. assigns each item retrieved from inventory a index number
             for item in cart_items:
                 price = item[1]
                 quantity = item[2]
                 #calculations for createOrder parameters
-                total_cost += price * quantity  
-                total_items += quantity  
-            print(f"{total_cost} | {total_items}") #debug
+                total_cost += int(price) * int(quantity) 
+                total_items += int(quantity)  
+            print(f"Order Total: {total_cost:.2f} | {total_items}") #debug
 
 
             date = datetime.datetime.now().strftime('%Y-%m-%d') #gets current date
 
-            print(f"The Current Date is: {date}") #debug
+            print(f"Order Date: {date}") #debug
 
             #create order history
             order_history = OrderHistory()
