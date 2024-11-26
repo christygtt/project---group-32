@@ -116,7 +116,7 @@ def historyMenu(history, user):
         print()
 
 
-def cartMenu(cart,user):
+def cartMenu(cart,User):
     while True:
         print("Cart Menu: ")
         print("0. Go Back")
