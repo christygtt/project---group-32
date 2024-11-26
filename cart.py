@@ -1,6 +1,7 @@
 from inventory import Inventory 
 from history import OrderHistory
 import sqlite3
+import datetime
 
 class Cart:
 
@@ -88,41 +89,61 @@ class Cart:
         except sqlite3.Error as e:
             print(f"Error removing item(s) to cart: {e}")
 
+
     def checkOut(self, userID):
         try:
             query = """
-                    SELECT Inventory.ISBN, Inventory.Price, Cart.Quantity
-                    FROM Cart
-                    INNER JOIN Inventory ON Cart.ISBN = Inventory.ISBN
-                    WHERE Cart.UserID = ?;
-                """
+                SELECT Inventory.ISBN, Inventory.Price, Cart.Quantity
+                FROM Cart
+                INNER JOIN Inventory ON Cart.ISBN = Inventory.ISBN
+                WHERE Cart.userID = ?;
+            """
             self.cursor.execute(query, (userID,))
+
             cart_items = self.cursor.fetchall()
-            
+
+            print(f"Cart items fetched: {cart_items}")
             if not cart_items:
                 print("Cart is empty.")
                 return
             else:
-                # initiates classes with database as parameter
-                inventory = Inventory(self.database_name)
-                order_history = OrderHistory(self.database_name)
-                order_id = order_history.createOrder(userID)
+            
+                total_cost = 0  
+                total_items = 0  
 
-                for row in cart_items:
-                    isbn, price, quantity = row
-                    inventory.decrease_stock(isbn,quantity)
-                    order_history.addOrderItems(order_id, isbn, quantity, price)
-                
-                # delete all items from cart after checking out
-                query = "DELETE FROM Cart WHERE UserID = ?"
-                data = (userID)
 
-                self.cursor.execute(query, data)
+                for item in cart_items:
+                    price = item[1]
+                    quantity = item[2]
+                    
+                    total_cost += price * quantity  
+                    total_items += quantity  
+
+                date = datetime.datetime.now().strftime('%Y-%m-%d')
+
+                order_history = OrderHistory()
+                order_id = order_history.createOrder(userID, total_items, total_cost, date)
+
+                order_history.addOrderItems(userID, order_id)
+
+                inventory = Inventory(self.database_name)  
+                for item in cart_items:
+                    isbn = item[0]
+                    quantity = item[2]
+                    
+                    inventory.decrease_stock(isbn, quantity)
+
+                query = "DELETE FROM Cart WHERE userID = ?"
+                self.cursor.execute(query, (userID,))
                 self.connection.commit()
-                print("Checkout complete.")
+
+
+                print("Checkout complete.")  
 
         except sqlite3.Error as e:
-            print(f"Error completing Checkout. {e}")
+            print(f"Error checking : {e}")
+
+        
            
 
 

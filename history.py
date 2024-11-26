@@ -11,7 +11,7 @@ class OrderHistory:
 
     def viewHistory(self, userID):
         query = "SELECT OrderNumber, ItemNumber, Cost, Date FROM Orders WHERE UserID = ?"
-        self.cursor.execute(query, (userID))
+        self.cursor.execute(query, (userID,))
         orders = self.cursor.fetchall()
         return orders
 
@@ -38,11 +38,11 @@ class OrderHistory:
     def createOrder(self, userID, itemNumber, cost, date):
         while True:
             orderID = str(random.randint(100000, 999999))
-            self.cursor.execute("SELECT * FROM Odrers WHERE OrderNumber = ?",(orderID,))
+            self.cursor.execute("SELECT * FROM Orders WHERE OrderNumber = ?",(orderID,))
             if not self.cursor.fetchone():
                 break
 
-        query = "INSERT INTO Orders (OrderNUmber, UserID ItemNumber, Cost Date) VALUES (?, ?, ?, ?, ?)"
+        query = "INSERT INTO Orders (OrderNumber, UserID, ItemNumber, Cost, Date) VALUES (?, ?, ?, ?, ?)"
         self.cursor.execute(query, (orderID, userID, itemNumber, cost, date))
         self.connection.commit() 
         return orderID
