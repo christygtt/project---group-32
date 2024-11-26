@@ -13,7 +13,7 @@ class Cart:
         self.cartDB()
 
     def cartDB(self, database_name="methods.db"):
-        """Sets up the database connection."""
+        #Sets up the database connection.
         self.database_name = database_name
         self.connection = sqlite3.connect(database_name)
         self.cursor = self.connection.cursor()
@@ -68,22 +68,34 @@ class Cart:
             
             self.connection.commit()
         except sqlite3.Error as e:
-            print(f"Error adding item(s) to cart: {e}")
+            print(f"Error adding item(s) to cart: {e}") #catch a specific sqlite error
 
 
 
     def removeFromCart(self, userID, ISBN):
         #Removes from user cart
         try:
-            self.cursor.execute("SELECT * FROM Cart WHERE userID = ? AND ISBN = ?", (userID, ISBN))
-            if self.cursor.fetchone():
-                query = "DELETE FROM Cart WHERE userID = ? AND ISBN = ?"
-                data = (userID, ISBN)
+            self.cursor.execute("SELECT Quantity FROM Cart WHERE userID =? AND ISBN =?", (userID, ISBN))
+            result = self.cursor.fetchone()
 
-                self.cursor.execute(query, data)
-                self.connection.commit()
+            if result:
+                curr_quantity = result[0]
+                #if the user has more than one copy
+                if curr_quantity > 1:
+                    new_quantity = curr_quantity - 1
+                    update_query = "UPDATE Cart SET Quantity = ? WHERE userID = ? AND ISBN = ?"
+                    self.cursor.execute(update_query, (new_quantity, userID, ISBN))
+                    self.connection.commit()
+                    self.cursor.execute("SELECT * FROM Cart WHERE userID = ? AND ISBN = ?", (userID, ISBN))
+                    print(f"One copy of ISBN {ISBN} has been removed from your cart. Remaining amount: {new_quantity}")
+                else:
+                    query = "DELETE FROM Cart WHERE userID = ? AND ISBN = ?"
+                    data = (userID, ISBN)
 
-                print(f"All copies of ISBN {ISBN} has been deleted from cart.")
+                    self.cursor.execute(query, data)
+                    self.connection.commit()
+
+                    print(f"All copies of ISBN {ISBN} has been deleted from cart.")
             else:
                 print("Item not found in cart.")
         except sqlite3.Error as e:
@@ -93,7 +105,7 @@ class Cart:
     def checkOut(self, userID):
         try:
             query = """
-                SELECT Inventory.ISBN, Inventory.Price, Cart.Quantity
+                SELECT Inventory.Title,Inventory.ISBN, Inventory.Price, Cart.Quantity
                 FROM Cart
                 INNER JOIN Inventory ON Cart.ISBN = Inventory.ISBN
                 WHERE Cart.userID = ?;
@@ -101,14 +113,24 @@ class Cart:
             self.cursor.execute(query, (userID,))
 
             cart_items = self.cursor.fetchall()
-            
-            print(f"*********************************************************")
-            print(f"                Current items in cart                    ")
-            print(f"**************************Cart***************************")
-            print(f"                      {cart_items}")
             if not cart_items:
-                print("               Your cart is empty.                       ")
+                print("**********************Your cart is empty.*************************")
                 return
+            print(f"************************Current items in cart**************************")
+            cart_Cost = 0.0
+            for row in cart_items:
+                    title,ISBN, price, quantity = row
+
+                    item_cost = float(price) * int(quantity)
+                    cart_Cost += item_cost
+
+                    print(f"Title: {title}")
+                    print(f"ISBN: {ISBN}")
+                    print(f"Price: {price:.2f} | Quantity: {quantity} | Item Total: {item_cost:.2f}")
+                    print(f"***********************************************************************")
+
+            print(f"******************************************************************************")
+            print(f"Total Cart Cost: ${cart_Cost:.2f}")  
             
             total_cost = 0  
             total_items = 0  
