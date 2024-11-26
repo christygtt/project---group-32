@@ -1,4 +1,5 @@
 import random
+import sqlite3
 
 class OrderHistory:
 
@@ -56,9 +57,9 @@ class OrderHistory:
             query = "INSERT INTO OrderItems (OrderNumber, ISBN, Quantity) VALUES (?, ?, ?)"
             self.cursor.execute(query, (orderID, isbn, quantity))
         self.connection.commit()
-    query = "DELETE FROM Cart WHERE UserID = ?"
-    self.cursor.execute(query, (userID,))
-    self.connection.commit()    
+        query = "DELETE FROM Cart WHERE UserID = ?"
+        self.cursor.execute(query, (userID,))
+        self.connection.commit()    
 
 
     def closeConnection(self):

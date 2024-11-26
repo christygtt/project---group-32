@@ -2,6 +2,7 @@ from user import *
 from cart import *
 from inventory import *
 from history import *
+from cart import *
 
 
 ## COMPLETE initial pre-login menu
@@ -74,7 +75,7 @@ def inventoryMenu(inventory):
         print()
 
 
-def cartMenu(cart):
+def cartMenu(cart,user):
     while True:
         print("Cart Menu: ")
         print("0. Go Back")
@@ -82,18 +83,27 @@ def cartMenu(cart):
         print("2. Add Items To Cart")
         print("3. Remove Item From Cart")
         print("4. Checkout")
-        choice = int(input("Enter your choice:"))
+
+        userID = User.getUserID()
+        try:
+            choice = int(input("Enter your choice:"))
+            print()
+        except ValueError:
+            print(f"Invalid choice. Please enter a valid number.")
+            continue
         print()
-        if choice == "0":
+        if choice == 0:
             break
-        elif choice == "1":
-            cart.viewCart()
-        elif choice == "2":
-            cart.addToCart()
-        elif choice == "3":
-            cart.removeFromCart()
-        elif choice == "4":
-            cart.Checkout()
+        elif choice == 1:
+            cart.viewCart(userID)
+        elif choice == 2:
+            ISBN = input("Enter the ISBN of the item you'd like to order: ")
+            quantity = input("Enter the quantity of item: ")
+            cart.addToCart(userID, ISBN, quantity)
+        elif choice == 3:
+            cart.removeFromCart(userID)
+        elif choice == 4:
+            cart.Checkout(userID)
         else:
             print(f"Invalid. option. Please try again.")
         print()
